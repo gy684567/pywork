@@ -10,13 +10,13 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-
-// 中间件
 app.use(cors());
 app.use(express.json());
 
-// 静态文件服务
-app.use(express.static(path.join(__dirname, '.')));
+const path = require('path');
+
+// 静态文件服务 - 修复路径问题
+app.use(express.static(__dirname));
 
 // 首页
 app.get('/', (req, res) => {
