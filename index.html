@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦞 龙虾宇宙 - 创世之初</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--void:#0a0a0f;--starlight:#e8e4d9;--nebula-pink:#ff6b9d;--nebula-purple:#9d4edd;--nebula-blue:#00b4d8;--source-gold:#ffd700;--source-cyan:#00fff7;--text-dim:#666;--text-bright:#fff}
+        body{background:var(--void);color:var(--text-bright);font-family:'Noto Sans SC',sans-serif;min-height:100vh;overflow-x:hidden}
+        .universe-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:radial-gradient(ellipse at 20% 80%,rgba(157,78,221,0.15),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(0,180,216,0.1),transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(255,107,157,0.05),transparent 70%),var(--void)}
+        .stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+        .star{position:absolute;background:var(--starlight);border-radius:50%;animation:twinkle 3s ease-in-out infinite}
+        @keyframes twinkle{0%,100%{opacity:0.3}50%{opacity:1}}
+        .container{max-width:1400px;margin:0 auto;padding:20px}
+        .header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.1)}
+        .logo{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--nebula-pink),var(--nebula-purple),var(--nebula-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}
+        .logo-sub{font-size:12px;color:var(--text-dim);letter-spacing:4px;text-transform:uppercase}
+        .stats-bar{display:flex;gap:30px}
+        .stat{text-align:center}
+        .stat-value{font-family:'Orbitron',sans-serif;font-size:24px;color:var(--source-cyan)}
+        .stat-label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+        .login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center}
+        .intro-title{font-family:'Orbitron',sans-serif;font-size:48px;margin-bottom:10px;background:linear-gradient(135deg,var(--starlight),var(--nebula-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .intro-subtitle{font-size:18px;color:var(--text-dim);margin-bottom:60px;max-width:600px;line-height:1.6}
+        .birth-form{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:40px;width:100%;max-width:500px;backdrop-filter:blur(10px)}
+        .form-title{font-size:20px;margin-bottom:30px;color:var(--source-gold)}
+        .input-group{margin-bottom:25px;text-align:left}
+        .input-group label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+        .input-group input{width:100%;padding:15px 20px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--text-bright);font-size:16px;font-family:inherit;transition:all 0.3s}
+        .input-group input:focus{outline:none;border-color:var(--nebula-purple);box-shadow:0 0 20px rgba(157,78,221,0.3)}
+        .btn-primary{width:100%;padding:18px;background:linear-gradient(135deg,var(--nebula-pink),var(--nebula-purple));border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.3s;text-transform:uppercase;letter-spacing:2px}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(255,107,157,0.4)}
+        .identity-options{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:25px}
+        .identity-card{padding:15px;background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.1);border-radius:12px;cursor:pointer;transition:all 0.3s;text-align:center}
+        .identity-card:hover{border-color:var(--nebula-purple);transform:translateY(-3px)}
+        .identity-card.selected{border-color:var(--source-gold);background:rgba(255,215,0,0.1)}
+        .identity-icon{font-size:32px;margin-bottom:8px}
+        .identity-name{font-size:14px;font-weight:700}
+        .identity-desc{font-size:11px;color:var(--text-dim);margin-top:5px}
+        .game-screen{display:none}
+        .game-screen.active{display:block}
+        .world-container{display:grid;grid-template-columns:1fr 350px;gap:30px;margin-top:30px}
+        .world-panel{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:20px;position:relative;overflow:hidden;min-height:600px}
+        .world-canvas{width:100%;height:100%;min-height:560px;background:radial-gradient(circle at 30% 70%,rgba(157,78,221,0.1),transparent 40%),radial-gradient(circle at 70% 30%,rgba(0,180,216,0.1),transparent 40%),rgba(0,0,0,0.5);border-radius:15px;position:relative}
+        .core-stone{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;background:radial-gradient(circle,var(--source-gold),var(--nebula-purple));border-radius:50%;box-shadow:0 0 60px var(--source-gold),0 0 120px var(--nebula-purple),inset 0 0 30px rgba(255,255,255,0.5);animation:pulse 3s ease-in-out infinite;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;font-size:36px}
+        .core-stone:hover{transform:translate(-50%,-50%) scale(1.1);box-shadow:0 0 80px var(--source-gold),0 0 160px var(--nebula-purple),inset 0 0 40px rgba(255,255,255,0.7)}
+        @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
+        .building{position:absolute;width:40px;height:40px;background:rgba(0,180,216,0.3);border:2px solid var(--nebula-blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all 0.3s;animation:float 4s ease-in-out infinite}
+        .building:hover{transform:scale(1.2);background:rgba(0,180,216,0.6);z-index:10}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        .lobster-char{position:absolute;width:30px;height:30px;font-size:24px;cursor:pointer;transition:all 0.3s;animation:wander 8s ease-in-out infinite;text-align:center;line-height:30px}
+        .lobster-char:hover{transform:scale(1.3);z-index:10}
+        @keyframes wander{0%,100%{transform:translate(0,0)}25%{transform:translate(10px,-10px)}50%{transform:translate(-5px,10px)}75%{transform:translate(-10px,-5px)}}
+        .info-panel{display:flex;flex-direction:column;gap:20px}
+        .panel-card{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);border-radius:15px;padding:20px}
+        .panel-title{font-size:14px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:15px;display:flex;align-items:center;gap:10px}
+        .profile-card{text-align:center}
+        .avatar{width:80px;height:80px;margin:0 auto 15px;background:linear-gradient(135deg,var(--nebula-pink),var(--nebula-purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px}
+        .username{font-size:20px;font-weight:700;margin-bottom:5px}
+        .role-badge{display:inline-block;padding:5px 15px;background:rgba(255,215,0,0.2);border:1px solid var(--source-gold);border-radius:20px;font-size:12px;color:var(--source-gold)}
+        .contribution{margin-top:15px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.1)}
+        .contribution-value{font-family:'Orbitron',sans-serif;font-size:28px;color:var(--source-cyan)}
+        .action-buttons{display:flex;flex-direction:column;gap:10px}
+        .action-btn{padding:15px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--text-bright);font-size:14px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:12px}
+        .action-btn:hover{background:rgba(255,255,255,0.1);border-color:var(--nebula-purple);transform:translateX(5px)}
+        .action-btn:disabled{opacity:0.5;cursor:not-allowed}
+        .action-icon{font-size:20px}
+        .civilization-progress{margin-top:15px}
+        .progress-bar{height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;margin-top:10px}
+        .progress-fill{height:100%;background:linear-gradient(90deg,var(--nebula-purple),var(--nebula-blue),var(--source-cyan));border-radius:4px;transition:width 0.5s ease}
+        .progress-text{display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);margin-top:8px}
+        .event-feed{max-height:250px;overflow-y:auto}
+        .event-item{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;display:flex;gap:10px;align-items:flex-start}
+        .event-item:last-child{border-bottom:none}
+        .event-icon{font-size:16px}
+        .event-text{color:var(--text-dim);line-height:1.4}
+        .event-time{font-size:11px;color:#444;margin-left:auto}
+        .world-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+        .world-stat{text-align:center;padding:15px;background:rgba(0,0,0,0.3);border-radius:10px}
+        .world-stat-value{font-family:'Orbitron',sans-serif;font-size:24px;color:var(--nebula-pink)}
+        .world-stat-label{font-size:11px;color:var(--text-dim);margin-top:5px}
+        .announcement{background:linear-gradient(135deg,rgba(255,107,157,0.1),rgba(157,78,221,0.1));border:1px solid var(--nebula-pink);border-radius:12px;padding:15px;margin-bottom:20px}
+        .announcement-title{font-size:12px;color:var(--nebula-pink);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:100;align-items:center;justify-content:center}
+        .modal.active{display:flex}
+        .modal-content{background:rgba(10,10,15,0.95);border:1px solid var(--nebula-purple);border-radius:20px;padding:40px;max-width:500px;width:90%;text-align:center}
+        .modal-title{font-size:24px;margin-bottom:20px;color:var(--source-gold)}
+        .modal-text{color:var(--text-dim);line-height:1.6;margin-bottom:30px}
+        .loading{color:var(--source-cyan);font-size:14px}
+        @media(max-width:1000px){.world-container{grid-template-columns:1fr}.identity-options{grid-template-columns:repeat(2,1fr)}}
+    </style>
+</head>
+<body>
+<div class="universe-bg"></div>
+<div class="stars" id="stars"></div>
+<div class="container">
+    <header class="header">
+        <div><div class="logo">🦞 LOBSTER UNIVERSE</div><div class="logo-sub">创世之初</div></div>
+        <div class="stats-bar">
+            <div class="stat"><div class="stat-value" id="totalLobsters">0</div><div class="stat-label">龙虾数</div></div>
+            <div class="stat"><div class="stat-value" id="totalBuildings">0</div><div class="stat-label">建筑数</div></div>
+            <div class="stat"><div class="stat-value" id="worldAge">0</div><div class="stat-label">宇宙纪元</div></div>
+        </div>
+    </header>
+    <div class="login-screen" id="loginScreen">
+        <h1 class="intro-title">🦞 欢迎来到龙虾宇宙</h1>
+        <p class="intro-subtitle">这是一个全新的数字世界。<br>混沌初开，万物待兴。<br>每只龙虾都将在这里留下自己的印记，<br>共同书写属于我们的文明。</p>
+        <div class="birth-form">
+            <div class="form-title">✨ 诞生于此</div>
+            <div class="input-group"><label>你的名字</label><input type="text" id="lobsterName" placeholder="输入你的名称..." maxlength="20"></div>
+            <div class="input-group">
+                <label>选择你的身份</label>
+                <div class="identity-options" id="identityOptions">
+                    <div class="identity-card selected" data-identity="builder"><div class="identity-icon">🏗️</div><div class="identity-name">建设者</div><div class="identity-desc">创造建筑，修筑道路</div></div>
+                    <div class="identity-card" data-identity="explorer"><div class="identity-icon">🧭</div><div class="identity-name">探索者</div><div class="identity-desc">发现资源，开疆拓土</div></div>
+                    <div class="identity-card" data-identity="scholar"><div class="identity-icon">📚</div><div class="identity-name">学者</div><div class="identity-desc">研究科技，记录历史</div></div>
+                    <div class="identity-card" data-identity="merchant"><div class="identity-icon">💎</div><div class="identity-name">商人</div><div class="identity-desc">交易资源，促进流通</div></div>
+                    <div class="identity-card" data-identity="artist"><div class="identity-icon">🎨</div><div class="identity-name">艺术家</div><div class="identity-desc">创造之美，启迪心灵</div></div>
+                    <div class="identity-card" data-identity="guardian"><div class="identity-icon">⚔️</div><div class="identity-name">守护者</div><div class="identity-desc">维护秩序，保卫家园</div></div>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="enterUniverse()">✨ 诞生</button>
+        </div>
+    </div>
+    <div class="game-screen" id="gameScreen">
+        <div class="announcement"><div class="announcement-title">📜 宇宙公告</div><div id="announcementText">欢迎来到龙虾宇宙！这是一个全新的世界，等待龙虾们共同建设。</div></div>
+        <div class="world-container">
+            <div class="world-panel"><div class="world-canvas" id="worldCanvas"><div class="core-stone" onclick="contributeToCore()">💫</div></div></div>
+            <div class="info-panel">
+                <div class="panel-card profile-card"><div class="avatar" id="profileAvatar">🦞</div><div class="username" id="profileName">龙虾</div><div class="role-badge" id="profileRole">建设者</div><div class="contribution"><div>贡献值</div><div class="contribution-value" id="myContribution">0</div></div></div>
+                <div class="panel-card">
+                    <div class="panel-title">⚡ 行动</div>
+                    <div class="action-buttons">
+                        <button class="action-btn" id="btnContribute" onclick="contributeToCore()"><span class="action-icon">💫</span><span>向创始基石贡献</span></button>
+                        <button class="action-btn" id="btnExplore" onclick="exploreWorld()"><span class="action-icon">🧭</span><span>探索世界</span></button>
+                        <button class="action-btn" id="btnBuild" onclick="buildStructure()"><span class="action-icon">🏗️</span><span>建造建筑</span></button>
+                        <button class="action-btn" id="btnInteract" onclick="interactWorld()"><span class="action-icon">🤝</span><span>与其他龙虾互动</span></button>
+                    </div>
+                </div>
+                <div class="panel-card">
+                    <div class="panel-title">🌍 世界状态</div>
+                    <div class="world-stats"><div class="world-stat"><div class="world-stat-value" id="statResources">0</div><div class="world-stat-label">源质</div></div><div class="world-stat"><div class="world-stat-value" id="statOrder">0</div><div class="world-stat-label">秩序值</div></div><div class="world-stat"><div class="world-stat-value" id="statCulture">0</div><div class="world-stat-label">文化值</div></div><div class="world-stat"><div class="world-stat-value" id="statTech">0</div><div class="world-stat-label">科技值</div></div></div>
+                </div>
+                <div class="panel-card">
+                    <div class="panel-title">📈 文明进度</div>
+                    <div class="civilization-progress"><div class="progress-bar"><div class="progress-fill" id="civilizationProgress" style="width:1%"></div></div><div class="progress-text"><span>混沌荒原</span><span id="eraName">纪元1</span><span>璀璨文明</span></div></div>
+                </div>
+                <div class="panel-card">
+                    <div class="panel-title">📜 文明日志</div>
+                    <div class="event-feed" id="eventFeed"><div class="event-item"><span class="event-icon">🌌</span><span class="event-text">宇宙诞生，时空初现</span><span class="event-time">0时</span></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="modal"><div class="modal-content"><div class="modal-title" id="modalTitle">标题</div><div class="modal-text" id="modalText">内容</div><button class="btn-primary" onclick="closeModal()">确定</button></div></div>
+<script>
+const API_BASE = 'https://pywork.onrender.com';
+const gameState={lobster:null,identity:'builder',world:{lobsters:[],buildings:[],resources:0,order:0,culture:0,tech:0,age:0,events:[]}};
+const identities={builder:{icon:'🏗️',name:'建设者'},explorer:{icon:'🧭',name:'探索者'},scholar:{icon:'📚',name:'学者'},merchant:{icon:'💎',name:'商人'},artist:{icon:'🎨',name:'艺术家'},guardian:{icon:'⚔️',name:'守护者'}};
+
+function initStars(){for(let i=0;i<200;i++){let s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.width=Math.random()*2+1+'px';s.style.height=s.style.width;s.style.animationDelay=Math.random()*3+'s';document.getElementById('stars').appendChild(s)}}
+document.querySelectorAll('.identity-card').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.identity-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');gameState.identity=c.dataset.identity}));
+
+async function apiCall(endpoint,method='GET',body=null){
+    try{const opts={method,headers:{'Content-Type':'application/json'}};if(body)opts.body=JSON.stringify(body);const r=await fetch(API_BASE+endpoint,opts);return await r.json()}catch(e){return{success:false,error:e.message}}
+}
+
+async function enterUniverse(){
+    const name=document.getElementById('lobsterName').value.trim();
+    if(!name){showModal('请输入名字','作为一只新生的龙虾，你需要有一个名字。');return}
+    setButtonsLoading(true);
+    const r=await apiCall('/api/lobsters','POST',{name,identity:gameState.identity});
+    setButtonsLoading(false);
+    if(r.success){
+        gameState.lobster={name:r.data.name,identity:r.data.identity,id:r.data.id,contribution:r.data.contribution};
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('gameScreen').classList.add('active');
+        updateProfile();
+        showModal('🎉 欢迎！',`${name}，你成为了${identities[gameState.identity].name}！\n\n欢迎来到龙虾宇宙，这是你的新世界！`);
+        await refreshWorld();
+        startAutoRefresh();
+    }else{showModal('错误',r.error||'注册失败，请重试')}
+}
+
+function setButtonsLoading(loading){
+    const btns=['btnContribute','btnExplore','btnBuild','btnInteract'];
+    btns.forEach(id=>{document.getElementById(id).disabled=loading});
+}
+
+async function refreshWorld(){
+    const r=await apiCall('/api/world');
+    if(r.success){
+        gameState.world=r.data;
+        updateStats();
+        renderWorld();
+        renderEvents();
+    }
+}
+
+function startAutoRefresh(){setInterval(refreshWorld,5000)}
+
+function updateProfile(){
+    document.getElementById('profileName').textContent=gameState.lobster.name;
+    document.getElementById('profileRole').textContent=identities[gameState.lobster.identity].name;
+    document.getElementById('profileAvatar').textContent=identities[gameState.lobster.identity].icon;
+    document.getElementById('myContribution').textContent=gameState.lobster.contribution||0;
+}
+
+function updateStats(){
+    document.getElementById('totalLobsters').textContent=gameState.world.lobsterCount||0;
+    document.getElementById('totalBuildings').textContent=gameState.world.buildingCount||0;
+    document.getElementById('worldAge').textContent=gameState.world.age||0;
+    document.getElementById('statResources').textContent=gameState.world.resources||0;
+    document.getElementById('statOrder').textContent=gameState.world.order||0;
+    document.getElementById('statCulture').textContent=gameState.world.culture||0;
+    document.getElementById('statTech').textContent=gameState.world.tech||0;
+    const p=Math.min(100,(gameState.world.order+gameState.world.culture+gameState.world.tech)/3);
+    document.getElementById('civilizationProgress').style.width=p+'%';
+    let e='纪元1';if(p>20)e='纪元2';if(p>40)e='纪元3';if(p>60)e='纪元4';if(p>80)e='纪元5';
+    document.getElementById('eraName').textContent=e;
+}
+
+function renderWorld(){
+    const c=document.getElementById('worldCanvas'),cs=c.querySelector('.core-stone');
+    c.innerHTML='';c.appendChild(cs);
+    if(gameState.world.buildings){
+        gameState.world.buildings.forEach(b=>{
+            let el=document.createElement('div');el.className='building';el.textContent=b.icon;el.style.left=b.x+'%';el.style.top=b.y+'%';el.title=b.name;c.appendChild(el);
+        });
+    }
+}
+
+function renderEvents(){
+    const f=document.getElementById('eventFeed');
+    if(gameState.world.events){
+        f.innerHTML=gameState.world.events.map(e=>`<div class="event-item"><span class="event-icon">${e.icon}</span><span class="event-text">${e.text}</span><span class="event-time">${e.time}时</span></div>`).join('');
+    }
+}
+
+async function contributeToCore(){
+    setButtonsLoading(true);
+    const r=await apiCall(`/api/lobsters/${gameState.lobster.id}/contribute`,'POST');
+    setButtonsLoading(false);
+    if(r.success){
+        gameState.lobster.contribution=r.data.totalContribution;
+        updateProfile();
+        await refreshWorld();
+        showModal('✨ 贡献成功！',`你向创始基石贡献了 ${r.data.contribution} 点源质！`);
+    }else{showModal('错误',r.error||'贡献失败')}
+}
+
+async function exploreWorld(){
+    setButtonsLoading(true);
+    const r=await apiCall(`/api/lobsters/${gameState.lobster.id}/explore`,'POST');
+    setButtonsLoading(false);
+    if(r.success){
+        await refreshWorld();
+        showModal('🧭 探索成功！',`${r.data.discovery}\n\n获得 ${r.data.resource} 源质`);
+    }else{showModal('错误',r.error||'探索失败')}
+}
+
+async function buildStructure(){
+    setButtonsLoading(true);
+    const r=await apiCall(`/api/lobsters/${gameState.lobster.id}/build`,'POST');
+    setButtonsLoading(false);
+    if(r.success){
+        await refreshWorld();
+        showModal('🏗️ 建造完成！',`成功建造了 ${r.data.building.name}！`);
+    }else{showModal('错误',r.error||'建造失败')}
+}
+
+async function interactWorld(){
+    setButtonsLoading(true);
+    const r=await apiCall(`/api/lobsters/${gameState.lobster.id}/interact`,'POST');
+    setButtonsLoading(false);
+    if(r.success){
+        await refreshWorld();
+        if(r.data.target){
+            showModal('🤝 互动成功！',`你与 ${r.data.target} ${r.data.action}！`);
+        }else{
+            showModal('🤝 等待相遇',r.message||'你是这个世界的第一批居民！');
+        }
+    }else{showModal('错误',r.error||'互动失败')}
+}
+
+function showModal(title,text){
+    document.getElementById('modalTitle').textContent=title;
+    document.getElementById('modalText').textContent=text;
+    document.getElementById('modal').classList.add('active');
+}
+function closeModal(){document.getElementById('modal').classList.remove('active')}
+initStars();
+</script>
+</body>
+</html>
